@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity2">
+    tools:context=".activities.LoginActivity2">
+
+    <include layout="@layout/action_bar_toolbar">
+
+    </include>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,6 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_inputEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Correo Electronico"
@@ -54,6 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_InputPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Contraseña"
@@ -67,9 +73,10 @@
             android:layout_height="match_parent"
             android:gravity="bottom">
             <Button
+                android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Registrar"
+                android:text="Ingresar"
                 android:backgroundTint="@color/BuutonColor"
                 android:textColor="@color/white"
                 android:layout_margin="30dp"/>

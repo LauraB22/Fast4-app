@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.laura.fast4">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,17 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fast4">
         <activity
-            android:name=".LoginActivity2"
+            android:name=".activities.Conductor.RegisterDriverActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity2"
+            android:name=".activities.LoginActivity2"
             android:exported="false"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".activities.SelectOptionAuthActivity2" />
         <activity
-            android:name=".SelectOptionAuthActivity2"
+            android:name=".activities.Cliente.RegisterActivity2"
+            android:exported="false"
+            android:parentActivityName=".activities.SelectOptionAuthActivity2" />
+        <activity
+            android:name=".activities.SelectOptionAuthActivity2"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

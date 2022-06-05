@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "251448547393",
+    "project_id": "fast4-e6ea6",
+    "storage_bucket": "fast4-e6ea6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251448547393:android:7f97ef69dc14b88e9b0ec0",
+        "android_client_info": {
+          "package_name": "com.laura.fast4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "251448547393-muf5d18q9fat3eo0igig9u999t6ab6b5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.laura.fast4",
+            "certificate_hash": "31593cf91f0f384148b75ab5b71afe0f3e7ab6f9"
+          }
+        },
+        {
+          "client_id": "251448547393-bmph2c7ggighn74k059e8qkuteso3eg0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOM-3_SxZgFn9ORWCZculvcCbxunOO-10"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "251448547393-bmph2c7ggighn74k059e8qkuteso3eg0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

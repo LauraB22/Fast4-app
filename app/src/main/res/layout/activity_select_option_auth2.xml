@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/purple1Prin"
-    tools:context=".SelectOptionAuthActivity2">
+    tools:context=".activities.SelectOptionAuthActivity2">
 
     <include layout="@layout/action_bar_toolbar"/>
 
@@ -33,6 +33,7 @@
             android:textSize="20sp"
             android:textStyle="bold" />
         <Button
+            android:id="@+id/btnGoLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
@@ -42,6 +43,7 @@
             android:text="Ya tengo cuenta" />
 
         <Button
+            android:id="@+id/btnGoRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
