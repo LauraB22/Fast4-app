@@ -8,21 +8,24 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.laura.fast4.R;
+import com.laura.fast4.activities.Cliente.MapClientActivity;
+import com.laura.fast4.activities.Conductor.MapDriverActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     Button imDriver;
     Button imUser;
-    SharedPreferences mpref;
+    SharedPreferences mPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mpref = getApplicationContext().getSharedPreferences("typeuser", MODE_PRIVATE);
-        SharedPreferences.Editor editor = mpref.edit();
+        mPref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
+        SharedPreferences.Editor editor = mPref.edit();
         imDriver = findViewById(R.id.btnDriver);
         imUser = findViewById(R.id.btnUser);
 
@@ -44,6 +47,25 @@ public class MainActivity extends AppCompatActivity {
                 goToSelectAuth();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            String user = mPref.getString("user", "");
+            Intent intent;
+            if (user.equals("client")){
+                intent = new Intent(this, MapClientActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }else{
+                intent = new Intent(this, MapDriverActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+
+        }
     }
 
     private void goToSelectAuth() {

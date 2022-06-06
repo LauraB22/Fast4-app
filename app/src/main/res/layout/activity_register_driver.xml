@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.Cliente.RegisterActivity2">
+    tools:context=".activities.Conductor.RegisterDriverActivity">
 
     <include layout="@layout/action_bar_toolbar"/>
     <LinearLayout
@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,7 +22,6 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginTop="65dp"
                 android:src="@drawable/usuario"/>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -29,10 +29,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txtNombre"
+                    android:id="@+id/txtname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="60dp"
                     android:hint="Nombre Completo"
                     android:inputType="text">
                 </com.google.android.material.textfield.TextInputEditText>
@@ -52,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txtInputCorreo"
+                    android:id="@+id/txtInputEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Correo Electronico"
@@ -79,7 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Marca del Vehículo"
-                    android:inputType="textPassword">
+                    android:inputType="text">
                 </com.google.android.material.textfield.TextInputEditText>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -102,7 +101,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Placa del Vehículo"
-                    android:inputType="textPassword">
+                    android:inputType="text">
                 </com.google.android.material.textfield.TextInputEditText>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -122,7 +121,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txtInputPassword"
+                    android:id="@+id/txtInput_Password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Contraseña"
@@ -149,4 +148,4 @@
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

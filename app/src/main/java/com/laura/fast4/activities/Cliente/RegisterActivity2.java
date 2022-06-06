@@ -3,6 +3,7 @@ package com.laura.fast4.activities.Cliente;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +22,7 @@ import com.laura.fast4.models.Provider.AuthProvider;
 import com.laura.fast4.models.Provider.ClientProvider;
 
 public class RegisterActivity2 extends AppCompatActivity {
-    SharedPreferences mpref;
+    SharedPreferences mPref;
     Button mButtonRegister;
     TextInputEditText minputnombre;
     TextInputEditText minputemail;
@@ -36,6 +37,7 @@ public class RegisterActivity2 extends AppCompatActivity {
 
         mAuthProvider = new AuthProvider();
         mClientProvider = new ClientProvider();
+        mPref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
 
         mButtonRegister = findViewById(R.id.btnRegister);
         minputnombre = findViewById(R.id.txtNombre);
@@ -52,7 +54,7 @@ public class RegisterActivity2 extends AppCompatActivity {
 
     }
 
-    public void ClickRegister(){
+    void ClickRegister(){
         String nombre = minputnombre.getText().toString();
         String email = minputemail.getText().toString();
         String password = minputpassword.getText().toString();
@@ -88,7 +90,9 @@ public class RegisterActivity2 extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(RegisterActivity2.this, "El registro se realizo exitosamente", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(RegisterActivity2.this, MapClientActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
 
                 }else{
                     Toast.makeText(RegisterActivity2.this, "No se pudo registrar el usuario", Toast.LENGTH_SHORT).show();

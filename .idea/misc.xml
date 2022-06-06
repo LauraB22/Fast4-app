@@ -6,11 +6,15 @@
         <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/drawable/gradient_drawable.xml" value="0.226" />
         <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/drawable/rounded_button.xml" value="0.1535" />
         <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/layout/action_bar_toolbar.xml" value="0.21927083333333333" />
-        <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/layout/activity_login2.xml" value="0.1" />
-        <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/layout/activity_register2.xml" value="0.2" />
-        <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/layout/activity_register_driver.xml" value="0.1" />
+        <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/layout/activity_login2.xml" value="0.2" />
+        <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/layout/activity_map_client.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/layout/activity_map_driver.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/layout/activity_register2.xml" value="0.264" />
+        <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/layout/activity_register_driver.xml" value="0.264" />
         <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/layout/activity_select_option_auth2.xml" value="0.4" />
+        <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/menu/client_menu.xml" value="0.21927083333333333" />
+        <entry key="..\:/Users/OMEN/AndroidStudioProjects/Fast4/app/src/main/res/menu/driver_menu.xml" value="0.21927083333333333" />
       </map>
     </option>
   </component>
