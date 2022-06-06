@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 
 import com.google.android.gms.location.FusedLocationProviderApi;
@@ -35,8 +36,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.laura.fast4.R;
 import com.laura.fast4.activities.Cliente.MapClientActivity;
@@ -51,25 +55,48 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
     private AuthProvider mAuthProvider;
     private LocationRequest mLocationRequest;
     private FusedLocationProviderClient mFusedLocation;
+    private Button mButtonConnect;
+    private boolean misConnect = false;
     private final static int LOCATION_REQUEST_CODE = 1;
     private final static int SETTINGS_REQUEST_CODE = 2;
+    private LatLng mCurrentLatLng;
+
+    private Marker mMarker;
 
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             for (Location location : locationResult.getLocations()) {
                 if (getApplicationContext() != null) {
+
+                    mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    if(mMarker != null){
+                        mMarker.remove();
+                    }
+                    mMarker = mMap.addMarker(new MarkerOptions().position(
+                            new LatLng(location.getLatitude(), location.getLongitude())
+                            )
+                            .title("Tu posición")
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.cochecito))
+                    );
                     //Obtener la localizacion del usuario en tiempo real
                     mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
                                     .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                                    .zoom(15f)
+                                    .zoom(16f)
                                     .build()
                     ));
+
+                    updateLocation();
                 }
             }
         }
     };
+
+    private void updateLocation(){
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +111,18 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
 
         mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
 
+        mButtonConnect = findViewById(R.id.btnConnect);
+        mButtonConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)  {
+            if(misConnect){
+                disconnect();
+            }else{
+                startLocation();
+            }
+            }
+        });
+
     }
 
     @Override
@@ -97,10 +136,11 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            // for ActivityCompa
+            // t#requestPermissions for more details.
             return;
         }
-        mMap.setMyLocationEnabled(true);
+
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
@@ -119,7 +159,9 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     if(gpsActive()){
+
                         mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                        mMap.setMyLocationEnabled(false);
                     }else{
                         showAlertDialogNoGPS();
                     }
@@ -147,6 +189,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
                 return;
             }
             mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+            mMap.setMyLocationEnabled(false);
         }else{
             showAlertDialogNoGPS();
         }
@@ -176,11 +219,22 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         return isActive;
     }
 
+    private void disconnect(){
+        mButtonConnect.setText("Conectarse");
+        misConnect = false;
+        if(mFusedLocation != null){
+            mFusedLocation.removeLocationUpdates(mLocationCallback);
+        }
+    }
+
     public void startLocation(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 if(gpsActive()){
+                    mButtonConnect.setText("Desconectarse");
+                    misConnect = true;
                     mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                    mMap.setMyLocationEnabled(false);
 
                 }else {
                     showAlertDialogNoGPS();
@@ -190,6 +244,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         }else{
             if(gpsActive()){
                 mFusedLocation.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                mMap.setMyLocationEnabled(false);
             }else{
                 showAlertDialogNoGPS();
             }
