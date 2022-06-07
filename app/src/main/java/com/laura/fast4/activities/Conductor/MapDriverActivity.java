@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -42,11 +43,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.laura.fast4.R;
 import com.laura.fast4.activities.Cliente.MapClientActivity;
 import com.laura.fast4.activities.MainActivity;
 import com.laura.fast4.includes.MyToolBar;
 import com.laura.fast4.models.Provider.AuthProvider;
+import com.laura.fast4.models.Provider.GeofireProvider;
 
 public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -61,7 +64,36 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
     private final static int SETTINGS_REQUEST_CODE = 2;
     private LatLng mCurrentLatLng;
 
+    private GeofireProvider mGeoFireProvider;
     private Marker mMarker;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_map_driver);
+
+        MyToolBar.show(this, "Mapa del conductor", false);
+
+        mAuthProvider = new AuthProvider();
+        mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mMapFragment.getMapAsync(this);
+        mGeoFireProvider = new GeofireProvider();
+
+        mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
+
+        mButtonConnect = findViewById(R.id.btnConnect);
+        mButtonConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)  {
+                if(misConnect){
+                    disconnect();
+                }else{
+                    startLocation();
+                }
+            }
+        });
+
+    }
 
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
@@ -94,35 +126,9 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
     };
 
     private void updateLocation(){
-
-    }
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map_driver);
-
-        MyToolBar.show(this, "Mapa del conductor", false);
-
-        mAuthProvider = new AuthProvider();
-        mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mMapFragment.getMapAsync(this);
-
-        mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
-
-        mButtonConnect = findViewById(R.id.btnConnect);
-        mButtonConnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)  {
-            if(misConnect){
-                disconnect();
-            }else{
-                startLocation();
-            }
-            }
-        });
-
+        if(mAuthProvider.existSesion() && mCurrentLatLng != null){
+            mGeoFireProvider.saveLocation(mAuthProvider.getId(), mCurrentLatLng);
+        }
     }
 
     @Override
@@ -148,7 +154,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         mLocationRequest.setSmallestDisplacement(5);
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
-        startLocation();
+        //startLocation();
 
     }
 
@@ -220,10 +226,18 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void disconnect(){
-        mButtonConnect.setText("Conectarse");
-        misConnect = false;
+        
         if(mFusedLocation != null){
+            mButtonConnect.setText("Conectarse");
+            misConnect = false;
             mFusedLocation.removeLocationUpdates(mLocationCallback);
+            if(mAuthProvider.existSesion()){
+                mGeoFireProvider.removeLocation(mAuthProvider.getId());
+
+            }
+
+        }else{
+            Toast.makeText(this, "No te puedes desconectar", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -289,6 +303,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     void logout(){
+        disconnect();
         mAuthProvider.logout();
         Intent intent = new Intent(MapDriverActivity.this, MainActivity.class);
         startActivity(intent);

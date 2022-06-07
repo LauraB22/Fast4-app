@@ -23,6 +23,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQueryDataEventListener;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -32,13 +35,22 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.laura.fast4.R;
 import com.laura.fast4.activities.Conductor.MapDriverActivity;
 import com.laura.fast4.activities.MainActivity;
 import com.laura.fast4.includes.MyToolBar;
 import com.laura.fast4.models.Provider.AuthProvider;
+import com.laura.fast4.models.Provider.GeofireProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapClientActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -49,23 +61,12 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     private FusedLocationProviderClient mFusedLocation;
     private final static int LOCATION_REQUEST_CODE = 1;
     private final static int SETTINGS_REQUEST_CODE = 2;
+    private Marker mMarker;
+    private GeofireProvider mGeoProvider;
+    private LatLng mCurrentLatLng;
 
-    LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            for (Location location : locationResult.getLocations()) {
-                if (getApplicationContext() != null) {
-                    //Obtener la localizacion del usuario en tiempo real
-                    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
-                        new CameraPosition.Builder()
-                            .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                            .zoom(15f)
-                            .build()
-                    ));
-                }
-            }
-        }
-    };
+    private List<Marker> mDriversMarkers = new ArrayList<>();
+    private boolean myFirstTime = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,100 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         mMapFragment.getMapAsync(this);
 
         mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
+        mGeoProvider = new GeofireProvider();
 
+    }
+
+    LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            for (Location location : locationResult.getLocations()) {
+                if (getApplicationContext() != null) {
+
+                    if(mMarker != null){
+                        mMarker.remove();
+                    }
+
+                    mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude()); //lugar donde se mantiene almacenado la posicion
+
+                    mMarker = mMap.addMarker(new MarkerOptions().position(
+                            new LatLng(location.getLatitude(), location.getLongitude())
+                            )
+                                    .title("Tu posición")
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ubicacion))
+                    );
+                    //Obtener la localizacion del usuario en tiempo real
+                    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
+                        new CameraPosition.Builder()
+                            .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                            .zoom(15f)
+                            .build()
+                    ));
+                    if(myFirstTime){//con esto este metodo se va a actualizar 1 vez
+                        myFirstTime = false;
+                        getActiveDrivers();
+                    }
+                }
+            }
+        }
+    };
+
+
+
+    private void getActiveDrivers(){
+        mGeoProvider.getActiveDrivers(mCurrentLatLng).addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {//Muestra los conductores cercanos
+                for(Marker marker: mDriversMarkers){
+                    if(marker.getTag() != null){
+                        if(marker.getTag().equals(key)){
+                            return;
+                        }
+                    }
+                }
+                LatLng driverLatLng = new LatLng(location.latitude, location.longitude); //posicion en la que se conecto
+                Marker marker = mMap.addMarker(new MarkerOptions().position(driverLatLng)
+                        .title("Conductor disponible").
+                                icon(BitmapDescriptorFactory.fromResource(R.drawable.cochecito)));
+                marker.setTag(key);
+                mDriversMarkers.add(marker);
+            }
+
+            @Override
+            public void onKeyExited(String key) { //Cuando un conductor se desconecta
+                for(Marker marker: mDriversMarkers){
+                    if(marker.getTag() != null){
+                        if(marker.getTag().equals(key)){
+                            marker.remove();
+                            mDriversMarkers.remove(marker);
+                            return;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {// actualizar la posicion de cada conductor
+                for(Marker marker: mDriversMarkers){
+                    if(marker.getTag() != null){
+                        if(marker.getTag().equals(key)){
+                            marker.setPosition(new LatLng(location.latitude, location.longitude));
+                            return;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
